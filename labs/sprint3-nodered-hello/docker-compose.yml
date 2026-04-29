@@ -17,7 +17,7 @@ services:
     ports:
       - "1880:1880"
     volumes:
-      - ./nodered/data/flows.json:/data/flows.json:ro
+      - ./nodered/data:/data
 
   simulator:
     build:
@@ -26,7 +26,43 @@ services:
       - mosquitto
     environment:
       - MQTT_URL=mqtt://host.docker.internal:1883
-      - MQTT_TOPIC=devices/device-001/telemetry
+      - ENVIRONMENT=living-room
+      - DEVICE_ID=sensor-001
+      - MQTT_TOPIC=home/living-room/sensor-001/telemetry
+      - MQTT_COMMAND_TOPIC=home/living-room/sensor-001/cmd
+      - MQTT_STATUS_TOPIC=home/living-room/sensor-001/status
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["node", "device-simulator.js"]
+
+  simulator_kitchen:
+    build:
+      context: ./simulator
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_URL=mqtt://host.docker.internal:1883
+      - ENVIRONMENT=kitchen
+      - DEVICE_ID=sensor-002
+      - MQTT_TOPIC=home/kitchen/sensor-002/telemetry
+      - MQTT_COMMAND_TOPIC=home/kitchen/sensor-002/cmd
+      - MQTT_STATUS_TOPIC=home/kitchen/sensor-002/status
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["node", "device-simulator.js"]
+
+  simulator_garage:
+    build:
+      context: ./simulator
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_URL=mqtt://host.docker.internal:1883
+      - ENVIRONMENT=garage
+      - DEVICE_ID=sensor-003
+      - MQTT_TOPIC=home/garage/sensor-003/telemetry
+      - MQTT_COMMAND_TOPIC=home/garage/sensor-003/cmd
+      - MQTT_STATUS_TOPIC=home/garage/sensor-003/status
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: ["node", "device-simulator.js"]
@@ -38,7 +74,7 @@ services:
       - mosquitto
     environment:
       - MQTT_URL=mqtt://host.docker.internal:1883
-      - MQTT_TOPIC=devices/+/telemetry
+      - MQTT_TOPIC=home/#
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: ["node", "subscriber.js"]

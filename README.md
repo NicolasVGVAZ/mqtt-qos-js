@@ -14,10 +14,13 @@ All new lab files are under:
 
 `docker compose` in that directory starts:
 
-1. `eclipse-mosquitto` broker on port `1883` (plaintext baseline)
-2. `nodered/node-red` UI on port `1880`
-3. Node.js simulator publishing every second to `devices/device-001/telemetry`
-4. Node.js consumer subscriber logging `devices/+/telemetry`
+1. `eclipse-mosquitto` broker on port `1883` (local/Codespace broker)
+2. `nodered/node-red` UI on port `1880` with preloaded orchestration flow
+3. 3 simulators publishing telemetry and status for:
+  - `home/living-room/sensor-001/*`
+  - `home/kitchen/sensor-002/*`
+  - `home/garage/sensor-003/*`
+4. Node.js consumer subscriber logging all topics under `home/#`
 
 ### Run
 
@@ -29,19 +32,44 @@ docker compose up -d --build
 ### Access
 
 - Node-RED editor: `http://localhost:1880`
-- Basic hello dashboard UI from the included flow: `http://localhost:1880/hello-ui`
+- IoT dashboard UI from the included flow: `http://localhost:1880/iot-ui`
+
+### Arquitetura MQTT usada
+
+Tópicos organizados por domínio:
+
+- Telemetria: `home/<ambiente>/<dispositivo>/telemetry`
+- Estado (retained): `home/<ambiente>/<dispositivo>/status`
+- Comando: `home/<ambiente>/<dispositivo>/cmd`
+
+Decisões:
+
+- `QoS 1` para comando e status (maior confiabilidade)
+- `retain=true` em status e comandos para refletir último estado conhecido
+- wildcard `home/+/+/telemetry` e `home/+/+/status` para escalabilidade com múltiplos dispositivos
+- dois brokers no mesmo flow Node-RED:
+  - `Mosquitto Local` (`host.docker.internal:1883`)
+  - `HiveMQ Public` (`broker.hivemq.com:1883`)
 
 ### Verify behavior
 
-- Simulator publishes JSON payload every second with fields:
-  - `device_id`
-  - `ts` (ISO string)
-  - `seq`
-  - `temp_c` (random)
-  - `message` (`"hello"`)
-- Node-RED flow subscribes to `devices/+/telemetry`
-  - message visible in Node-RED Debug panel
-  - latest payload + temp chart available in `/hello-ui`
+- Simuladores publicam a cada 1 segundo:
+  - temperatura, umidade, estado do LED e timestamp
+  - tópico de status também atualizado (heartbeat)
+- Simuladores assinam `.../cmd` e alteram o estado com `on/off`
+- Node-RED:
+  - consome local e HiveMQ em paralelo
+  - normaliza e guarda estado/histórico por dispositivo
+  - exibe cards e mini-gráficos no `/iot-ui`
+  - envia comando para local, HiveMQ ou ambos via formulário
+
+### Demo prática sugerida
+
+1. Abrir o painel em `http://localhost:1880/iot-ui`.
+2. Mostrar chegada de dados de múltiplos ambientes.
+3. Enviar comando `on` para `living-room/sensor-001` usando broker local.
+4. Confirmar atualização do `status` no painel e nos logs do simulador.
+5. Repetir envio para `HiveMQ` (ou `Ambos`) e demonstrar roteamento.
 
 ### Logs
 

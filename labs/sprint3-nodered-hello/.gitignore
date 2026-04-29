@@ -1,0 +1,11 @@
+.nodered/
+nodered/data/node_modules/
+nodered/data/.npm/
+nodered/data/.config*.json
+nodered/data/.config*.json.backup
+nodered/data/.flows.json.backup
+nodered/data/.flows_cred.json.backup
+nodered/data/flows_cred.json
+nodered/data/package.json
+nodered/data/package-lock.json
+nodered/data/settings.js
