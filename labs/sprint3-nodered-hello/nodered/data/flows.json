@@ -1,422 +1,22 @@
 [
-  {
-    "id": "tab_iot",
-    "type": "tab",
-    "label": "IoT MQTT",
-    "disabled": false,
-    "info": ""
-  },
-  {
-    "id": "ui_base_1",
-    "type": "ui-base",
-    "name": "IoT Dashboard",
-    "path": "/ui",
-    "appIcon": "",
-    "includeClientData": true,
-    "acceptsClientConfig": [
-      "notification",
-      "control"
-    ],
-    "showPathInSidebar": false,
-    "headerContent": "page",
-    "navigationStyle": "default",
-    "titleBarStyle": "default",
-    "showReconnectNotification": true,
-    "notificationDisplayTime": 1,
-    "showDisconnectNotification": true,
-    "allowInstall": false
-  },
-  {
-    "id": "ui_theme_1",
-    "type": "theme",
-    "name": "Default Theme",
-    "colors": {
-      "surface": "#ffffff",
-      "primary": "#0094CE",
-      "bgPage": "#eeeeee",
-      "groupBg": "#ffffff",
-      "groupOutline": "#cccccc"
-    },
-    "sizes": {
-      "density": "default",
-      "pagePadding": "12px",
-      "groupGap": "12px",
-      "groupBorderRadius": "4px",
-      "widgetGap": "12px"
-    }
-  },
-  {
-    "id": "ui_page_1",
-    "type": "page",
-    "name": "Page 1",
-    "ui": "ui_base_1",
-    "path": "/page1",
-    "icon": "home",
-    "layout": "grid",
-    "theme": "ui_theme_1",
-    "breakpoints": [
-      {"name": "Default", "px": 0, "cols": 3},
-      {"name": "Tablet", "px": 576, "cols": 6},
-      {"name": "Small Desktop", "px": 768, "cols": 9},
-      {"name": "Desktop", "px": 1024, "cols": 12}
-    ],
-    "order": 1,
-    "className": "",
-    "visible": "true",
-    "disabled": "false"
-  },
-  {
-    "id": "ui_group_1",
-    "type": "group",
-    "name": "Sensores",
-    "page": "ui_page_1",
-    "width": 6,
-    "height": 1,
-    "order": 1,
-    "showTitle": true,
-    "className": "",
-    "visible": "true",
-    "disabled": "false",
-    "groupType": "default"
-  },
-  {
-    "id": "ui_group_2",
-    "type": "group",
-    "name": "Controle",
-    "page": "ui_page_1",
-    "width": 6,
-    "height": 1,
-    "order": 2,
-    "showTitle": true,
-    "className": "",
-    "visible": "true",
-    "disabled": "false",
-    "groupType": "default"
-  },
-  {
-    "id": "broker_hivemq",
-    "type": "mqtt-broker",
-    "name": "HiveMQ",
-    "broker": "broker.hivemq.com",
-    "port": "1883",
-    "clientid": "",
-    "autoConnect": true,
-    "usetls": false,
-    "protocolVersion": "4",
-    "keepalive": "60",
-    "cleansession": true,
-    "autoUnsubscribe": true,
-    "birthTopic": "",
-    "birthQos": "0",
-    "birthRetain": "false",
-    "birthPayload": "",
-    "birthMsg": {},
-    "closeTopic": "",
-    "closeQos": "0",
-    "closeRetain": "false",
-    "closePayload": "",
-    "closeMsg": {},
-    "willTopic": "",
-    "willQos": "0",
-    "willRetain": "false",
-    "willPayload": "",
-    "willMsg": {},
-    "userProps": "",
-    "sessionExpiry": ""
-  },
-  {
-    "id": "broker_local",
-    "type": "mqtt-broker",
-    "name": "Mosquitto",
-    "broker": "mosquitto",
-    "port": "1883",
-    "clientid": "",
-    "autoConnect": true,
-    "usetls": false,
-    "protocolVersion": "4",
-    "keepalive": "60",
-    "cleansession": true,
-    "autoUnsubscribe": true,
-    "birthTopic": "",
-    "birthQos": "0",
-    "birthRetain": "false",
-    "birthPayload": "",
-    "birthMsg": {},
-    "closeTopic": "",
-    "closeQos": "0",
-    "closeRetain": "false",
-    "closePayload": "",
-    "closeMsg": {},
-    "willTopic": "",
-    "willQos": "0",
-    "willRetain": "false",
-    "willPayload": "",
-    "willMsg": {},
-    "userProps": "",
-    "sessionExpiry": ""
-  },
-  {
-    "id": "mqtt_in_temp",
-    "type": "mqtt in",
-    "z": "tab_iot",
-    "name": "Temperatura (HiveMQ)",
-    "topic": "projeto/iot/+/temperatura",
-    "qos": "0",
-    "datatype": "auto-detect",
-    "broker": "broker_hivemq",
-    "nl": false,
-    "rap": true,
-    "rh": 0,
-    "inputs": 0,
-    "x": 200,
-    "y": 140,
-    "wires": [["route_temp","debug_temp"]]
-  },
-  {
-    "id": "route_temp",
-    "type": "function",
-    "z": "tab_iot",
-    "name": "Route by topic",
-    "func": "var t = msg.topic || '';\nif (t === 'projeto/iot/sala/temperatura') { return [msg, null]; }\nif (t === 'projeto/iot/cozinha/temperatura') { return [null, msg]; }\nreturn null;",
-    "outputs": 2,
-    "noerr": 0,
-    "x": 420,
-    "y": 140,
-    "wires": [["gauge_sala"],["gauge_cozinha"]]
-  },
-  {
-    "id": "gauge_sala",
-    "type": "gauge",
-    "z": "tab_iot",
-    "name": "Temperatura da Sala",
-    "group": "ui_group_1",
-    "order": 1,
-    "value": "payload",
-    "valueType": "msg",
-    "width": 3,
-    "height": 3,
-    "gtype": "gauge-full",
-    "gstyle": "needle",
-    "title": "Sala",
-    "alwaysShowTitle": true,
-    "floatingTitlePosition": "top-left",
-    "units": "C",
-    "min": 0,
-    "max": 50,
-    "sizeThickness": 16,
-    "sizeGap": 4,
-    "sizeKeyThickness": 8,
-    "styleRounded": true,
-    "styleGlow": false,
-    "x": 670,
-    "y": 100,
-    "wires": [[]]
-  },
-  {
-    "id": "gauge_cozinha",
-    "type": "gauge",
-    "z": "tab_iot",
-    "name": "Temperatura da Cozinha",
-    "group": "ui_group_1",
-    "order": 2,
-    "value": "payload",
-    "valueType": "msg",
-    "width": 3,
-    "height": 3,
-    "gtype": "gauge-full",
-    "gstyle": "needle",
-    "title": "Cozinha",
-    "alwaysShowTitle": true,
-    "floatingTitlePosition": "top-left",
-    "units": "C",
-    "min": 0,
-    "max": 50,
-    "sizeThickness": 16,
-    "sizeGap": 4,
-    "sizeKeyThickness": 8,
-    "styleRounded": true,
-    "styleGlow": false,
-    "x": 690,
-    "y": 180,
-    "wires": [[]]
-  },
-  {
-    "id": "ui_switch_light",
-    "type": "switch",
-    "z": "tab_iot",
-    "name": "Luz da Sala",
-    "label": "Luz da Sala",
-    "group": "ui_group_2",
-    "order": 1,
-    "width": 0,
-    "height": 0,
-    "passthru": false,
-    "decouple": false,
-    "topic": "topic",
-    "topicType": "msg",
-    "style": "",
-    "className": "",
-    "layout": "row-spread",
-    "clickableArea": "switch",
-    "onvalue": "true",
-    "onvalueType": "bool",
-    "offvalue": "false",
-    "offvalueType": "bool",
-    "onicon": "",
-    "oncolor": "",
-    "officon": "",
-    "offcolor": "",
-    "x": 220,
-    "y": 300,
-    "wires": [["mqtt_out_light"]]
-  },
-  {
-    "id": "mqtt_out_light",
-    "type": "mqtt out",
-    "z": "tab_iot",
-    "name": "Luz Sala -> Mosquitto",
-    "topic": "projeto/iot/sala/iluminacao/set",
-    "qos": "1",
-    "retain": "true",
-    "respTopic": "",
-    "contentType": "",
-    "userProps": "",
-    "correl": "",
-    "expiry": "",
-    "broker": "broker_local",
-    "x": 520,
-    "y": 300,
-    "wires": []
-  },
-  {
-    "id": "debug_temp",
-    "type": "debug",
-    "z": "tab_iot",
-    "name": "debug temp",
-    "active": true,
-    "tosidebar": true,
-    "console": false,
-    "tostatus": false,
-    "complete": "payload",
-    "targetType": "msg",
-    "statusVal": "",
-    "statusType": "auto",
-    "x": 420,
-    "y": 200,
-    "wires": []
-  }
-]
-[
     {
-        "id": "flow_iot_orq_01",
+        "id": "9b6ecc1f885929cb",
         "type": "tab",
-        "label": "IoT MQTT Orquestracao",
+        "label": "Fluxo 1",
         "disabled": false,
-        "info": ""
+        "info": "",
+        "env": []
     },
     {
-        "id": "broker_local_01",
-        "type": "mqtt-broker",
-        "name": "Mosquitto Local",
-        "broker": "mosquitto",
-        "port": "1883",
-        "clientid": "",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": true,
-        "autoUnsubscribe": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthRetain": "false",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closeRetain": "false",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willRetain": "false",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
-    },
-    {
-        "id": "broker_hivemq_01",
-        "type": "mqtt-broker",
-        "name": "HiveMQ Public",
-        "broker": "broker.hivemq.com",
-        "port": "1883",
-        "clientid": "",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": "60",
-        "cleansession": true,
-        "autoUnsubscribe": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthRetain": "false",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closeRetain": "false",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willRetain": "false",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
-    },
-    {
-        "id": "877f4e85b628e0e6",
-        "type": "mqtt-broker",
-        "name": "",
-        "broker": "broker.hivemq.com",
-        "port": 1883,
-        "clientid": "",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": 4,
-        "keepalive": 60,
-        "cleansession": true,
-        "autoUnsubscribe": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthRetain": "false",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closeRetain": "false",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willRetain": "false",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
-    },
-    {
-        "id": "8703701189f19f6c",
-        "type": "base",
+        "id": "aef4678119c92d92",
+        "type": "ui-base",
         "name": "My Dashboard",
         "path": "/dashboard",
         "appIcon": "",
         "includeClientData": true,
         "acceptsClientConfig": [
-            "notification",
-            "control"
+            "ui-notification",
+            "ui-control"
         ],
         "showPathInSidebar": false,
         "headerContent": "page",
@@ -428,8 +28,8 @@
         "allowInstall": false
     },
     {
-        "id": "ac770af1327b93bf",
-        "type": "theme",
+        "id": "3f472d684279dae8",
+        "type": "ui-theme",
         "name": "Default Theme",
         "colors": {
             "surface": "#ffffff",
@@ -447,34 +47,34 @@
         }
     },
     {
-        "id": "2ca935e5ad5a3c91",
-        "type": "page",
-        "name": "Page 1",
-        "ui": "8703701189f19f6c",
+        "id": "f849f07ad0baae43",
+        "type": "ui-page",
+        "name": "MQTT AULA 5",
+        "ui": "aef4678119c92d92",
         "path": "/page1",
         "icon": "home",
         "layout": "grid",
-        "theme": "ac770af1327b93bf",
+        "theme": "3f472d684279dae8",
         "breakpoints": [
             {
                 "name": "Default",
-                "px": 0,
-                "cols": 3
+                "px": "0",
+                "cols": "3"
             },
             {
                 "name": "Tablet",
-                "px": 576,
-                "cols": 6
+                "px": "576",
+                "cols": "6"
             },
             {
                 "name": "Small Desktop",
-                "px": 768,
-                "cols": 9
+                "px": "768",
+                "cols": "9"
             },
             {
                 "name": "Desktop",
-                "px": 1024,
-                "cols": 12
+                "px": "1024",
+                "cols": "12"
             }
         ],
         "order": 1,
@@ -483,10 +83,10 @@
         "disabled": "false"
     },
     {
-        "id": "6e74f25b3dcee58b",
-        "type": "group",
-        "name": "Sensores",
-        "page": "2ca935e5ad5a3c91",
+        "id": "92a1cf6f6f05d9ec",
+        "type": "ui-group",
+        "name": "Controle",
+        "page": "f849f07ad0baae43",
         "width": 6,
         "height": 1,
         "order": 1,
@@ -497,9 +97,9 @@
         "groupType": "default"
     },
     {
-        "id": "eccd5b772165ba61",
+        "id": "645338a5a8b4cc97",
         "type": "mqtt-broker",
-        "name": "Mosquitto Codespace",
+        "name": "",
         "broker": "mosquitto",
         "port": 1883,
         "clientid": "",
@@ -528,58 +128,82 @@
         "sessionExpiry": ""
     },
     {
-        "id": "d4e56d4dfc963000",
+        "id": "7af3b11a3b766c89",
+        "type": "ui-group",
+        "name": "Sensores",
+        "page": "f849f07ad0baae43",
+        "width": 6,
+        "height": 1,
+        "order": -1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "98f5b43308fd39ae",
         "type": "mqtt in",
-        "z": "flow_iot_orq_01",
+        "z": "9b6ecc1f885929cb",
         "name": "",
-        "topic": "faculdade/iot/+/temperatura",
+        "topic": "home/living-room/device-001/telemetry",
         "qos": "2",
         "datatype": "auto-detect",
-        "broker": "877f4e85b628e0e6",
+        "broker": "645338a5a8b4cc97",
         "nl": false,
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 240,
-        "y": 700,
+        "x": 190,
+        "y": 300,
         "wires": [
             [
-                "ca72edf96bd515b5",
-                "f4d38a4e63949c36"
+                "c1f2e3d4b5a69788"
             ]
         ]
     },
     {
-        "id": "ca72edf96bd515b5",
-        "type": "debug",
-        "z": "flow_iot_orq_01",
-        "name": "debug 1",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 580,
-        "y": 700,
-        "wires": []
+        "id": "c1f2e3d4b5a69788",
+        "type": "change",
+        "z": "9b6ecc1f885929cb",
+        "name": "map temp to payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temp_c",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 520,
+        "y": 300,
+        "wires": [
+            [
+                "a19d043c72bbb2eb",
+                "7e1d68fc99b75868"
+            ]
+        ]
     },
     {
-        "id": "f4d38a4e63949c36",
-        "type": "gauge",
-        "z": "flow_iot_orq_01",
-        "name": "",
-        "group": "6e74f25b3dcee58b",
-        "order": 1,
+        "id": "a19d043c72bbb2eb",
+        "type": "ui-gauge",
+        "z": "9b6ecc1f885929cb",
+        "name": "Temperatura",
+        "group": "7af3b11a3b766c89",
+        "order": 0,
         "value": "payload",
         "valueType": "msg",
         "width": 3,
         "height": 3,
         "gtype": "gauge-half",
         "gstyle": "needle",
-        "title": "gauge",
+        "title": "Temperatura",
         "alwaysShowTitle": false,
         "floatingTitlePosition": "top-left",
         "units": "units",
@@ -594,49 +218,65 @@
                 "textType": "label"
             },
             {
-                "from": "4",
+                "from": "17",
                 "color": "#ffc800",
                 "text": "",
                 "textType": "label"
             },
             {
-                "from": "7",
+                "from": "34",
                 "color": "#ea5353",
                 "text": "",
                 "textType": "label"
             }
         ],
         "min": 0,
-        "max": 10,
+        "max": "50",
         "sizeThickness": 16,
         "sizeGap": 4,
         "sizeKeyThickness": 8,
         "styleRounded": true,
         "styleGlow": false,
         "className": "",
-        "x": 470,
-        "y": 800,
+        "x": 650,
+        "y": 380,
         "wires": [
             []
         ]
     },
     {
-        "id": "de4d854e3eea387b",
-        "type": "switch",
-        "z": "flow_iot_orq_01",
-        "name": "",
+        "id": "7e1d68fc99b75868",
+        "type": "debug",
+        "z": "9b6ecc1f885929cb",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "2f7a8f0b3f4d4f11",
+        "type": "ui-switch",
+        "z": "9b6ecc1f885929cb",
+        "name": "Luz da sala",
         "label": "Luz da sala",
-        "group": "6e74f25b3dcee58b",
-        "order": 0,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
+        "group": "92a1cf6f6f05d9ec",
+        "order": 2,
+        "width": 3,
+        "height": 1,
+        "passthru": true,
         "decouple": false,
-        "topic": "topic",
-        "topicType": "msg",
+        "topic": "",
+        "topicType": "str",
         "style": "",
         "className": "",
-        "layout": "row-spread",
+        "layout": "",
         "clickableArea": "switch",
         "onvalue": "true",
         "onvalueType": "bool",
@@ -646,20 +286,41 @@
         "offvalueType": "bool",
         "officon": "",
         "offcolor": "",
-        "x": 450,
-        "y": 920,
+        "x": 200,
+        "y": 440,
         "wires": [
             [
-                "c71c6a8511266a73"
+                "5c6e7d8f9011a2b3"
             ]
         ]
     },
     {
-        "id": "c71c6a8511266a73",
+        "id": "5c6e7d8f9011a2b3",
+        "type": "function",
+        "z": "9b6ecc1f885929cb",
+        "name": "to cmd payload",
+        "func": "msg.topic = 'home/living-room/device-001/cmd';\nmsg.payload = { command: msg.payload ? 'on' : 'off' };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 450,
+        "y": 440,
+        "wires": [
+            [
+                "8d9e0f1a2b3c4d5e",
+                "9a0b1c2d3e4f5061"
+            ]
+        ]
+    },
+    {
+        "id": "8d9e0f1a2b3c4d5e",
         "type": "mqtt out",
-        "z": "flow_iot_orq_01",
+        "z": "9b6ecc1f885929cb",
         "name": "",
-        "topic": "faculdade/iot/sala/luz/set",
+        "topic": "",
         "qos": "1",
         "retain": "true",
         "respTopic": "",
@@ -667,472 +328,444 @@
         "userProps": "",
         "correl": "",
         "expiry": "",
-        "broker": "eccd5b772165ba61",
-        "x": 730,
-        "y": 920,
+        "broker": "645338a5a8b4cc97",
+        "x": 710,
+        "y": 420,
         "wires": []
     },
     {
-        "id": "9995a077b049f299",
-        "type": "mqtt in",
-        "z": "flow_iot_orq_01",
-        "name": "Local Telemetry",
-        "topic": "home/+/+/telemetry",
-        "qos": "1",
-        "datatype": "auto-detect",
-        "broker": "broker_local_01",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 140,
-        "y": 140,
-        "wires": [
-            [
-                "04f3a84d0cc4280b"
-            ]
-        ]
-    },
-    {
-        "id": "0ffef39c522e2da1",
-        "type": "mqtt in",
-        "z": "flow_iot_orq_01",
-        "name": "Local Status",
-        "topic": "home/+/+/status",
-        "qos": "1",
-        "datatype": "auto-detect",
-        "broker": "broker_local_01",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 130,
-        "y": 180,
-        "wires": [
-            [
-                "84d1a19a7de0f03c"
-            ]
-        ]
-    },
-    {
-        "id": "3e3dd2e869e7e0a2",
-        "type": "mqtt in",
-        "z": "flow_iot_orq_01",
-        "name": "HiveMQ Telemetry",
-        "topic": "home/+/+/telemetry",
-        "qos": "1",
-        "datatype": "auto-detect",
-        "broker": "broker_hivemq_01",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 150,
-        "y": 240,
-        "wires": [
-            [
-                "7daaf4717f1e06c4"
-            ]
-        ]
-    },
-    {
-        "id": "30e7292be623ae3b",
-        "type": "mqtt in",
-        "z": "flow_iot_orq_01",
-        "name": "HiveMQ Status",
-        "topic": "home/+/+/status",
-        "qos": "1",
-        "datatype": "auto-detect",
-        "broker": "broker_hivemq_01",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 140,
-        "y": 280,
-        "wires": [
-            [
-                "aa2af22aee1e19dc"
-            ]
-        ]
-    },
-    {
-        "id": "04f3a84d0cc4280b",
-        "type": "change",
-        "z": "flow_iot_orq_01",
-        "name": "source=local",
-        "rules": [
-            {
-                "t": "set",
-                "p": "brokerSource",
-                "pt": "msg",
-                "to": "local",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 350,
-        "y": 140,
-        "wires": [
-            [
-                "072d3cfb2da2e69c"
-            ]
-        ]
-    },
-    {
-        "id": "84d1a19a7de0f03c",
-        "type": "change",
-        "z": "flow_iot_orq_01",
-        "name": "source=local",
-        "rules": [
-            {
-                "t": "set",
-                "p": "brokerSource",
-                "pt": "msg",
-                "to": "local",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 350,
-        "y": 180,
-        "wires": [
-            [
-                "072d3cfb2da2e69c"
-            ]
-        ]
-    },
-    {
-        "id": "7daaf4717f1e06c4",
-        "type": "change",
-        "z": "flow_iot_orq_01",
-        "name": "source=hivemq",
-        "rules": [
-            {
-                "t": "set",
-                "p": "brokerSource",
-                "pt": "msg",
-                "to": "hivemq",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 360,
-        "y": 240,
-        "wires": [
-            [
-                "072d3cfb2da2e69c"
-            ]
-        ]
-    },
-    {
-        "id": "aa2af22aee1e19dc",
-        "type": "change",
-        "z": "flow_iot_orq_01",
-        "name": "source=hivemq",
-        "rules": [
-            {
-                "t": "set",
-                "p": "brokerSource",
-                "pt": "msg",
-                "to": "hivemq",
-                "tot": "str"
-            }
-        ],
-        "action": "",
-        "property": "",
-        "from": "",
-        "to": "",
-        "reg": false,
-        "x": 360,
-        "y": 280,
-        "wires": [
-            [
-                "072d3cfb2da2e69c"
-            ]
-        ]
-    },
-    {
-        "id": "072d3cfb2da2e69c",
-        "type": "function",
-        "z": "flow_iot_orq_01",
-        "name": "Normalize + Store",
-        "func": "const safeNum = (value) => {\n  const n = Number(value);\n  return Number.isFinite(n) ? n : null;\n};\n\nlet payload = msg.payload;\nif (typeof payload === \"string\") {\n  try {\n    payload = JSON.parse(payload);\n  } catch (err) {\n    return null;\n  }\n}\n\nif (!payload || typeof payload !== \"object\") {\n  return null;\n}\n\nconst topic = String(msg.topic || \"\");\nconst parts = topic.split(\"/\");\nif (parts.length !== 4 || parts[0] !== \"home\") {\n  return null;\n}\n\nconst environment = parts[1];\nconst device = parts[2];\nconst messageType = parts[3];\nconst key = `${environment}/${device}`;\n\nconst latest = global.get(\"iotLatest\") || {};\nconst history = global.get(\"iotHistory\") || {};\n\nif (!latest[key]) {\n  latest[key] = {};\n}\n\nconst normalized = {\n  ...payload,\n  ts: payload.ts || new Date().toISOString(),\n  environment,\n  device_id: payload.device_id || device,\n  broker: msg.brokerSource || \"unknown\"\n};\n\nlatest[key].environment = environment;\nlatest[key].device = device;\nlatest[key].broker = msg.brokerSource || \"unknown\";\nlatest[key].updated_at = normalized.ts;\nlatest[key][messageType] = normalized;\n\nif (messageType === \"telemetry\") {\n  if (!history[key]) {\n    history[key] = [];\n  }\n\n  history[key].push({\n    ts: normalized.ts,\n    temp_c: safeNum(normalized.temp_c),\n    humidity_pct: safeNum(normalized.humidity_pct)\n  });\n\n  if (history[key].length > 60) {\n    history[key].shift();\n  }\n}\n\nglobal.set(\"iotLatest\", latest);\nglobal.set(\"iotHistory\", history);\n\nmsg.payload = normalized;\nmsg.meta = {\n  key,\n  environment,\n  device,\n  messageType,\n  broker: msg.brokerSource || \"unknown\"\n};\n\nreturn msg;",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 590,
-        "y": 200,
-        "wires": [
-            [
-                "04603dcbfe773e52"
-            ]
-        ]
-    },
-    {
-        "id": "04603dcbfe773e52",
+        "id": "9a0b1c2d3e4f5061",
         "type": "debug",
-        "z": "flow_iot_orq_01",
-        "name": "Telemetry/Status Debug",
+        "z": "9b6ecc1f885929cb",
+        "name": "debug light cmd",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "meta",
-        "targetType": "msg",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 850,
-        "y": 200,
-        "wires": []
-    },
-    {
-        "id": "63ed99285e9b3c32",
-        "type": "http in",
-        "z": "flow_iot_orq_01",
-        "name": "GET /iot-ui",
-        "url": "/iot-ui",
-        "method": "get",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 110,
-        "y": 380,
-        "wires": [
-            [
-                "c3cec173cac1a3d1"
-            ]
-        ]
-    },
-    {
-        "id": "c3cec173cac1a3d1",
-        "type": "function",
-        "z": "flow_iot_orq_01",
-        "name": "Render Dashboard HTML",
-        "func": "const latest = global.get(\"iotLatest\") || {};\nconst history = global.get(\"iotHistory\") || {};\n\nconst esc = (value) => String(value ?? \"\").replace(/[&<>\"']/g, (ch) => ({\n  '&': '&amp;',\n  '<': '&lt;',\n  '>': '&gt;',\n  '\\\"': '&quot;',\n  \"'\": '&#39;'\n}[ch]));\n\nconst deviceKeys = Object.keys(latest).sort();\n\nconst sparkline = (rows) => {\n  if (!Array.isArray(rows) || rows.length === 0) {\n    return '<div class=\"empty\">Sem histórico ainda</div>';\n  }\n\n  const points = rows\n    .map((item) => Number(item.temp_c))\n    .filter((n) => Number.isFinite(n));\n\n  if (points.length === 0) {\n    return '<div class=\"empty\">Sem pontos de temperatura</div>';\n  }\n\n  const min = Math.min(...points);\n  const max = Math.max(...points);\n  const span = (max - min) || 1;\n  const width = 220;\n  const height = 70;\n\n  const chartPoints = points.map((temp, i) => {\n    const x = Math.round((i / Math.max(points.length - 1, 1)) * width);\n    const y = Math.round(height - ((temp - min) / span) * height);\n    return `${x},${y}`;\n  }).join(' ');\n\n  return `<svg viewBox=\"0 0 ${width} ${height}\" class=\"spark\" aria-label=\"histórico de temperatura\"><polyline fill=\"none\" stroke=\"#0b7285\" stroke-width=\"2.5\" points=\"${chartPoints}\"/></svg>`;\n};\n\nlet cards = '';\nfor (const key of deviceKeys) {\n  const item = latest[key] || {};\n  const telemetry = item.telemetry || {};\n  const status = item.status || {};\n  const rows = history[key] || [];\n\n  cards += `\n    <section class=\"card\">\n      <h3>${esc(key)}</h3>\n      <p><strong>Broker:</strong> ${esc(item.broker || \"n/a\")}</p>\n      <p><strong>Temperatura:</strong> ${esc(telemetry.temp_c ?? \"-\")} °C</p>\n      <p><strong>Umidade:</strong> ${esc(telemetry.humidity_pct ?? telemetry[\"humidity-pct\"] ?? \"-\")} %</p>\n      <p><strong>LED:</strong> ${status.led_on === true ? \"ON\" : status.led_on === false ? \"OFF\" : \"-\"}</p>\n      <p><strong>Atualizado:</strong> ${esc(item.updated_at || \"-\")}</p>\n      ${sparkline(rows)}\n    </section>\n  `;\n}\n\nif (!cards) {\n  cards = '<p class=\"empty\">Nenhum dispositivo recebido ainda.</p>';\n}\n\nmsg.headers = { \"Content-Type\": \"text/html; charset=utf-8\" };\nmsg.payload = `<!doctype html>\n<html lang=\"pt-BR\">\n<head>\n<meta charset=\"utf-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<meta http-equiv=\"refresh\" content=\"2\" />\n<title>Node-RED IoT MQTT</title>\n<style>\n:root{--bg:#f2efe8;--panel:#fffdf8;--ink:#172026;--accent:#0b7285;--line:#d8d2c8;}\n*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 30% 20%,#fff7dd 0%,var(--bg) 45%,#e9f2f3 100%)}\nmain{max-width:1100px;margin:0 auto;padding:20px}h1{margin:0 0 8px 0}p{margin:6px 0}\n.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.05)}\n.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}\n.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}\n.spark{width:100%;height:70px;background:#fbfcff;border:1px solid #d7e8eb;border-radius:6px}\nform{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;align-items:end}\nlabel{display:block;font-size:12px;margin-bottom:4px}input,select,button{width:100%;padding:9px;border-radius:8px;border:1px solid var(--line);font-size:14px}\nbutton{background:var(--accent);color:#fff;font-weight:600;border:0;cursor:pointer}\nbutton:hover{filter:brightness(.94)}.empty{color:#6b7280}\ncode{background:#ece7df;padding:2px 4px;border-radius:4px}\n</style>\n</head>\n<body>\n<main>\n  <div class=\"panel\">\n    <h1>Orquestração MQTT com Node-RED</h1>\n    <p>Entrada: <code>home/&lt;ambiente&gt;/&lt;dispositivo&gt;/(telemetry|status)</code></p>\n    <p>Comando: <code>home/&lt;ambiente&gt;/&lt;dispositivo&gt;/cmd</code></p>\n  </div>\n\n  <div class=\"panel\">\n    <h2>Controle de dispositivo</h2>\n    <form method=\"post\" action=\"/iot-control\">\n      <div>\n        <label>Broker</label>\n        <select name=\"broker\">\n          <option value=\"local\">Mosquitto local</option>\n          <option value=\"hivemq\">HiveMQ</option>\n          <option value=\"both\">Ambos</option>\n        </select>\n      </div>\n      <div>\n        <label>Ambiente</label>\n        <input name=\"environment\" value=\"living-room\" required />\n      </div>\n      <div>\n        <label>Dispositivo</label>\n        <input name=\"device\" value=\"sensor-001\" required />\n      </div>\n      <div>\n        <label>Comando</label>\n        <select name=\"command\">\n          <option value=\"on\">ON</option>\n          <option value=\"off\">OFF</option>\n        </select>\n      </div>\n      <div>\n        <label>QoS</label>\n        <select name=\"qos\">\n          <option value=\"0\">0</option>\n          <option value=\"1\" selected>1</option>\n        </select>\n      </div>\n      <div>\n        <label>Retain</label>\n        <select name=\"retain\">\n          <option value=\"false\">false</option>\n          <option value=\"true\" selected>true</option>\n        </select>\n      </div>\n      <div>\n        <button type=\"submit\">Enviar comando</button>\n      </div>\n    </form>\n  </div>\n\n  <div class=\"panel\">\n    <h2>Dispositivos recebidos</h2>\n    <div class=\"grid\">${cards}</div>\n  </div>\n</main>\n</body>\n</html>`;\nreturn msg;",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 360,
-        "y": 380,
-        "wires": [
-            [
-                "6681b3d3382d2f0a"
-            ]
-        ]
-    },
-    {
-        "id": "6681b3d3382d2f0a",
-        "type": "http response",
-        "z": "flow_iot_orq_01",
-        "name": "HTTP UI Response",
-        "statusCode": "",
-        "headers": {},
-        "x": 610,
-        "y": 380,
-        "wires": []
-    },
-    {
-        "id": "126ba01986c8e5ca",
-        "type": "http in",
-        "z": "flow_iot_orq_01",
-        "name": "POST /iot-control",
-        "url": "/iot-control",
-        "method": "post",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 120,
-        "y": 480,
-        "wires": [
-            [
-                "7e4db912b7765487"
-            ]
-        ]
-    },
-    {
-        "id": "7e4db912b7765487",
-        "type": "function",
-        "z": "flow_iot_orq_01",
-        "name": "Build + Route Command",
-        "func": "let form = msg.payload;\n\nif (typeof form === \"string\") {\n  const params = new URLSearchParams(form);\n  form = {};\n  for (const [k, v] of params.entries()) {\n    form[k] = v;\n  }\n}\n\nform = form || {};\n\nconst environment = String(form.environment || \"living-room\").trim();\nconst device = String(form.device || \"sensor-001\").trim();\nconst broker = String(form.broker || \"local\").trim().toLowerCase();\nconst command = String(form.command || \"off\").trim().toLowerCase();\nconst qos = Number(form.qos) === 0 ? 0 : 1;\nconst retain = String(form.retain || \"true\") === \"true\";\n\nconst topic = `home/${environment}/${device}/cmd`;\nconst payloadObj = {\n  source: \"nodered\",\n  command,\n  ts: new Date().toISOString()\n};\n\nnode.warn(`[iot-control] clique: broker=${broker} topic=${topic} command=${command} qos=${qos} retain=${retain}`);\n\nconst baseMsg = {\n  topic,\n  payload: JSON.stringify(payloadObj),\n  qos,\n  retain\n};\n\nlet outLocal = null;\nlet outHive = null;\nif (broker === \"local\" || broker === \"both\") {\n  outLocal = { ...baseMsg };\n}\nif (broker === \"hivemq\" || broker === \"both\") {\n  outHive = { ...baseMsg };\n}\n\nconst html = `<!doctype html><html lang=\"pt-BR\"><head><meta charset=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><title>Comando enviado</title></head><body style=\"font-family:Segoe UI,Arial,sans-serif;margin:24px\"><h2>Comando publicado</h2><p><strong>Broker:</strong> ${broker}</p><p><strong>Topico:</strong> ${topic}</p><p><strong>Payload:</strong> ${JSON.stringify(payloadObj)}</p><p><strong>QoS:</strong> ${qos} | <strong>Retain:</strong> ${retain}</p><p><a href=\"/iot-ui\">Voltar ao painel</a></p></body></html>`;\nconst outHttp = { ...msg, headers: { \"Content-Type\": \"text/html; charset=utf-8\" }, payload: html };\n\nreturn [outLocal, outHive, outHttp];",
-        "outputs": 3,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 380,
-        "y": 480,
-        "wires": [
-            [
-                "4f240f8703bd7ae0"
-            ],
-            [
-                "56ec156ac62f84af"
-            ],
-            [
-                "b7086227cdc84471"
-            ]
-        ]
-    },
-    {
-        "id": "4f240f8703bd7ae0",
-        "type": "mqtt out",
-        "z": "flow_iot_orq_01",
-        "name": "Publish Local CMD",
-        "topic": "",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "broker_local_01",
-        "x": 660,
+        "x": 700,
         "y": 460,
         "wires": []
     },
     {
-        "id": "56ec156ac62f84af",
-        "type": "mqtt out",
-        "z": "flow_iot_orq_01",
-        "name": "Publish HiveMQ CMD",
-        "topic": "",
-        "qos": "",
-        "retain": "",
-        "respTopic": "",
-        "contentType": "",
-        "userProps": "",
-        "correl": "",
-        "expiry": "",
-        "broker": "broker_hivemq_01",
-        "x": 670,
-        "y": 500,
-        "wires": []
+        "id": "d2c3b4a596877665",
+        "type": "mqtt in",
+        "z": "9b6ecc1f885929cb",
+        "name": "",
+        "topic": "home/kitchen/device-002/telemetry",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "645338a5a8b4cc97",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 560,
+        "wires": [
+            [
+                "e1f2a3b4c5d6e7f8"
+            ]
+        ]
     },
     {
-        "id": "b7086227cdc84471",
-        "type": "http response",
-        "z": "flow_iot_orq_01",
-        "name": "HTTP Control Response",
-        "statusCode": "",
-        "headers": {},
-        "x": 660,
-        "y": 540,
-        "wires": []
+        "id": "e1f2a3b4c5d6e7f8",
+        "type": "change",
+        "z": "9b6ecc1f885929cb",
+        "name": "kitchen temp to payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temp_c",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 560,
+        "wires": [
+            [
+                "f1e2d3c4b5a69780",
+                "0a1b2c3d4e5f6071"
+            ]
+        ]
     },
     {
-        "id": "temp_gauge",
-        "type": "gauge",
-        "z": "flow_iot_orq_01",
-        "name": "Temperatura",
-        "label": "°C",
-        "group": "6e74f25b3dcee58b",
+        "id": "f1e2d3c4b5a69780",
+        "type": "ui-gauge",
+        "z": "9b6ecc1f885929cb",
+        "name": "Temperatura cozinha",
+        "group": "7af3b11a3b766c89",
         "order": 1,
         "value": "payload",
         "valueType": "msg",
         "width": 3,
         "height": 3,
-        "gtype": "gauge-full",
+        "gtype": "gauge-half",
         "gstyle": "needle",
+        "title": "Temperatura cozinha",
         "alwaysShowTitle": false,
         "floatingTitlePosition": "top-left",
-        "units": "°C",
+        "units": "units",
         "icon": "",
         "prefix": "",
         "suffix": "",
         "segments": [
             {
-                "from": "15",
+                "from": "0",
                 "color": "#5cd65c",
-                "text": ""
+                "text": "",
+                "textType": "label"
             },
             {
-                "from": "25",
+                "from": "17",
                 "color": "#ffc800",
-                "text": ""
+                "text": "",
+                "textType": "label"
             },
             {
-                "from": "30",
+                "from": "34",
                 "color": "#ea5353",
-                "text": ""
+                "text": "",
+                "textType": "label"
             }
         ],
-        "min": 15,
-        "max": 35,
+        "min": 0,
+        "max": "50",
         "sizeThickness": 16,
         "sizeGap": 4,
         "sizeKeyThickness": 8,
         "styleRounded": true,
         "styleGlow": false,
         "className": "",
-        "x": 450,
-        "y": 800,
+        "x": 760,
+        "y": 560,
         "wires": [
             []
         ]
     },
     {
-        "id": "temp_processor",
-        "type": "function",
-        "z": "flow_iot_orq_01",
-        "name": "Extract Temperature",
-        "func": "const latest = global.get('iotLatest') || {};\nconst device = latest['living-room/sensor-001'] || {};\nconst telemetry = device.telemetry || {};\nconst temp = telemetry.temp_c;\nif (Number.isFinite(temp)) {\n    return { payload: temp };\n}\nreturn null;",
-        "outputs": 1,
-        "timeout": "",
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 280,
-        "y": 800,
+        "id": "0a1b2c3d4e5f6071",
+        "type": "debug",
+        "z": "9b6ecc1f885929cb",
+        "name": "debug kitchen temp",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "1a2b3c4d5e6f7081",
+        "type": "ui-switch",
+        "z": "9b6ecc1f885929cb",
+        "name": "Luz da cozinha",
+        "label": "Luz da cozinha",
+        "group": "92a1cf6f6f05d9ec",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "passthru": true,
+        "decouple": false,
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 200,
+        "y": 660,
         "wires": [
             [
-                "temp_gauge"
+                "2b3c4d5e6f708192"
             ]
         ]
     },
     {
-        "id": "temp_trigger",
-        "type": "inject",
-        "z": "flow_iot_orq_01",
-        "name": "Update Every 2s",
-        "props": [
-            {
-                "p": "payload"
-            }
-        ],
-        "repeat": "2",
-        "crontab": "",
-        "once": true,
-        "onceDelay": 0.1,
-        "topic": "",
-        "payload": "",
-        "payloadType": "date",
-        "x": 120,
-        "y": 800,
+        "id": "2b3c4d5e6f708192",
+        "type": "function",
+        "z": "9b6ecc1f885929cb",
+        "name": "kitchen cmd payload",
+        "func": "msg.topic = 'home/kitchen/device-002/cmd';\nmsg.payload = { command: msg.payload ? 'on' : 'off' };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 660,
         "wires": [
             [
-                "temp_processor"
+                "3c4d5e6f708192a3",
+                "4d5e6f708192a3b4"
             ]
         ]
+    },
+    {
+        "id": "3c4d5e6f708192a3",
+        "type": "mqtt out",
+        "z": "9b6ecc1f885929cb",
+        "name": "",
+        "topic": "",
+        "qos": "1",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "645338a5a8b4cc97",
+        "x": 720,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "4d5e6f708192a3b4",
+        "type": "debug",
+        "z": "9b6ecc1f885929cb",
+        "name": "debug kitchen cmd",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "5d6e7f8091a2b3c4",
+        "type": "mqtt in",
+        "z": "9b6ecc1f885929cb",
+        "name": "",
+        "topic": "home/garage/device-003/telemetry",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "645338a5a8b4cc97",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 760,
+        "wires": [
+            [
+                "6e7f8091a2b3c4d5"
+            ]
+        ]
+    },
+    {
+        "id": "6e7f8091a2b3c4d5",
+        "type": "change",
+        "z": "9b6ecc1f885929cb",
+        "name": "garage temp to payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.temp_c",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 760,
+        "wires": [
+            [
+                "7f8091a2b3c4d5e6",
+                "8f9011a2b3c4d5e6"
+            ]
+        ]
+    },
+    {
+        "id": "7f8091a2b3c4d5e6",
+        "type": "ui-gauge",
+        "z": "9b6ecc1f885929cb",
+        "name": "Temperatura garagem",
+        "group": "7af3b11a3b766c89",
+        "order": 4,
+        "value": "payload",
+        "valueType": "msg",
+        "width": 3,
+        "height": 3,
+        "gtype": "gauge-half",
+        "gstyle": "needle",
+        "title": "Temperatura garagem",
+        "alwaysShowTitle": false,
+        "floatingTitlePosition": "top-left",
+        "units": "units",
+        "icon": "",
+        "prefix": "",
+        "suffix": "",
+        "segments": [
+            {
+                "from": "0",
+                "color": "#5cd65c",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "17",
+                "color": "#ffc800",
+                "text": "",
+                "textType": "label"
+            },
+            {
+                "from": "34",
+                "color": "#ea5353",
+                "text": "",
+                "textType": "label"
+            }
+        ],
+        "min": 0,
+        "max": "50",
+        "sizeThickness": 16,
+        "sizeGap": 4,
+        "sizeKeyThickness": 8,
+        "styleRounded": true,
+        "styleGlow": false,
+        "className": "",
+        "x": 700,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8f9011a2b3c4d5e6",
+        "type": "debug",
+        "z": "9b6ecc1f885929cb",
+        "name": "debug garage temp",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "9f0a1b2c3d4e5f60",
+        "type": "ui-switch",
+        "z": "9b6ecc1f885929cb",
+        "name": "Luz da garagem",
+        "label": "Luz da garagem",
+        "group": "92a1cf6f6f05d9ec",
+        "order": 5,
+        "width": 3,
+        "height": 1,
+        "passthru": true,
+        "decouple": false,
+        "topic": "",
+        "topicType": "str",
+        "style": "",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 200,
+        "y": 860,
+        "wires": [
+            [
+                "0f1a2b3c4d5e6f70"
+            ]
+        ]
+    },
+    {
+        "id": "0f1a2b3c4d5e6f70",
+        "type": "function",
+        "z": "9b6ecc1f885929cb",
+        "name": "garage cmd payload",
+        "func": "msg.topic = 'home/garage/device-003/cmd';\nmsg.payload = { command: msg.payload ? 'on' : 'off' };\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 860,
+        "wires": [
+            [
+                "1f2a3b4c5d6e7f80",
+                "2f3a4b5c6d7e8f90"
+            ]
+        ]
+    },
+    {
+        "id": "1f2a3b4c5d6e7f80",
+        "type": "mqtt out",
+        "z": "9b6ecc1f885929cb",
+        "name": "",
+        "topic": "",
+        "qos": "1",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "645338a5a8b4cc97",
+        "x": 720,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "2f3a4b5c6d7e8f90",
+        "type": "debug",
+        "z": "9b6ecc1f885929cb",
+        "name": "debug garage cmd",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 880,
+        "wires": []
     }
 ]
